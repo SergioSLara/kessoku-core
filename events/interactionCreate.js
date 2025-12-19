@@ -4,20 +4,6 @@ module.exports = {
     name: Events.InteractionCreate,
     async execute(interaction) {
 
-        // ======================
-        // Tratamento de Botões Globais
-        // ======================
-
-        if (interaction.isButton()) {
-            if (interaction.customId === 'ping_refresh') {
-                await interaction.update({
-                    content: `Pong! Latência atualizada: ${Date.now() - interaction.createdTimestamp}ms`,
-                    components: []
-                });
-            }
-            return;
-        }
-
         if (!interaction.isChatInputCommand()) return;
 
         const command = interaction.client.commands.get(interaction.commandName);
@@ -27,10 +13,10 @@ module.exports = {
             return;
         }
 
-        // ======================
-        // Tratamento de Cooldowns
-        // ======================
-
+        // =================
+        // trata cooldowns
+        // =================
+        
         const { cooldowns } = interaction.client;
 
         if (!cooldowns.has(command.data.name)) {
@@ -57,18 +43,17 @@ module.exports = {
         timestamps.set(interaction.user.id, now);
         setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
 
-        // ======================
-        // tentativa de execução do comando
-        // ======================
-        
+        // ==========================
+        // tenta executar o comando
+        // ==========================
         try {
             await command.execute(interaction);
         } catch (error) {
             console.error(error);
             if (interaction.replied || interaction.deferred) {
-                await interaction.followUp({ content: 'Houve um erro ao executar esse comando!', ephemeral: true });
+                await interaction.followUp({ content: 'Ocorreu um erro ao executar esse comando!', ephemeral: true });
             } else {
-                await interaction.reply({ content: 'Houve um erro ao executar esse comando!', ephemeral: true });
+                await interaction.reply({ content: 'Ocorreu um erro ao executar esse comando!', ephemeral: true });
             }
         }
     }
