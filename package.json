@@ -1,18 +1,20 @@
 {
-  "name": "bocchi-bot",
+  "name": "kessoku-core",
   "version": "1.0.0",
-  "description": "Uma bot socialmente ansiosa para Discord.",
-  "main": "index.js",
-  "author": "TouchBrownn",
+  "description": "Um bot para Discord inspirado em Bocchi the Rock!",
+  "type": "module",
+  "main": "dist/index.js",
+  "author": "SergioSLara",
   "license": "MIT",
   "private": true,
   "engines": {
     "node": ">=18.17.0"
   },
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "lint": "eslint ."
+    "build": "tsc",
+    "start": "npm run build && node dist/index.js",
+    "dev": "nodemon --watch src --exec 'npm run build && node' dist/index.js",
+    "clean": "rm -rf dist"
   },
   "dependencies": {
     "@discordjs/opus": "^0.10.0",
@@ -30,7 +32,8 @@
     "sodium-native": "^5.0.10"
   },
   "devDependencies": {
-    "eslint": "^9.16.0",
-    "nodemon": "^3.1.7"
+    "@types/node": "^20.10.0",
+    "nodemon": "^3.1.7",
+    "typescript": "^5.3.3"
   }
 }

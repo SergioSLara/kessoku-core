@@ -1,6 +1,6 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 
-function formatUptime(seconds) {
+function formatUptime(seconds: number) {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
     const s = Math.floor(seconds % 60);
@@ -10,12 +10,12 @@ function formatUptime(seconds) {
     return `${s}s`;
 }
 
-module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('status')
-        .setDescription('Mostra o status atual do bot.'),
+export const data = new SlashCommandBuilder()
+    .setName('status')
+    .setDescription('Mostra o status atual do bot.');
 
-    async execute(interaction) {
+export async function execute(interaction: any) {
+    try {
         const uptime = formatUptime(process.uptime());
         const memory = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(1);
         const ping = interaction.client.ws.ping;
@@ -31,6 +31,14 @@ module.exports = {
             .setFooter({ text: 'kessoku core' })
             .setTimestamp();
 
-        await interaction.reply({ embeds: [embed], ephemeral: true });
+        await interaction.editReply({ embeds: [embed] });
+    } catch (error) {
+        console.error('Erro ao executar o comando status:', error);
+
+        try {
+            await interaction.editReply({ content: 'Houve um erro ao obter o status...', ephemeral: true });
+        } catch (err) {
+            console.error('Erro ao responder erro do status:', err);
+        }
     }
-};
+}

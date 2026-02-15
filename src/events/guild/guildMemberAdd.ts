@@ -1,12 +1,14 @@
-const { Events, EmbedBuilder } = require('discord.js');
-const { CANAL_ENTRADA } = require('../../config.json');
+import { Events, EmbedBuilder } from 'discord.js';
+import config from '../../../config.json' with { type: 'json' };
 
-module.exports = {
-    name: Events.GuildMemberAdd,
-    once: false,
+const { CANAL_ENTRADA_SERVIDOR } = config;
 
-    execute(member) {
-        const canal = member.guild.channels.cache.get(CANAL_ENTRADA);
+export const name = Events.GuildMemberAdd;
+export const once = false;
+
+export async function execute(member: any) {
+    try {
+        const canal = member.guild.channels.cache.get(CANAL_ENTRADA_SERVIDOR);
         if (!canal) return;
 
         const frasesBocchi = [
@@ -29,9 +31,11 @@ module.exports = {
             )
             .setThumbnail(member.user.displayAvatarURL({ forceStatic: false, size: 512 }))
             .setImage('https://media.tenor.com/89S0e4B0m38AAAAC/bocchi-the-rock-bocchi.gif')
-            .setFooter({ text: 'Bocchi the Bot • Tentando manter a calma', iconURL: member.guild.iconURL() })
+            .setFooter({ text: 'Bocchi the Bot • Tentando manter a calma', iconURL: member.guild.iconURL() ?? '' })
             .setTimestamp();
 
-        canal.send({ content: `||<@${member.id}>||`, embeds: [embed] });
+        await canal.send({ content: `||<@${member.id}>||`, embeds: [embed] });
+    } catch (error) {
+        console.error('Erro ao processar nova entrada de membro:', error);
     }
 }

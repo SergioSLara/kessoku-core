@@ -1,12 +1,14 @@
-const { Events, EmbedBuilder } = require('discord.js');
-const { CANAL_SAIDA } = require('../../config.json');
+import { Events, EmbedBuilder } from 'discord.js';
+import config from '../../../config.json' with { type: 'json' };
 
-module.exports = {
-    name: Events.GuildMemberRemove,
-    once: false,
+const { CANAL_SAIDA_SERVIDOR } = config;
 
-    execute(member) {
-        const canal = member.guild.channels.cache.get(CANAL_SAIDA);
+export const name = Events.GuildMemberRemove;
+export const once = false;
+
+export async function execute(member: any) {
+    try {
+        const canal = member.guild.channels.cache.get(CANAL_SAIDA_SERVIDOR);
         if (!canal) return;
 
         const frases = [
@@ -31,10 +33,12 @@ module.exports = {
             .setThumbnail(member.user.displayAvatarURL({ forceStatic: false, size: 512 }))
             .setFooter({
                 text: 'Bocchi está observando o vazio...',
-                iconURL: member.guild.iconURL()
+                iconURL: member.guild.iconURL() ?? ''
             })
             .setTimestamp();
 
-        canal.send({ embeds: [embed] });
+        await canal.send({ embeds: [embed] });
+    } catch (error) {
+        console.error('Erro ao processar saída de membro:', error);
     }
 }

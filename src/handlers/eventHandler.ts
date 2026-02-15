@@ -1,8 +1,12 @@
-const fs = require('fs');
-const path = require('path');
-const { pink, blue, bold, reset } = require('../utils/colors');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { pink, blue, bold, reset } from '../utils/colors.js';
 
-module.exports = (client) => {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default async (client: any) => {
     const eventsPath = path.join(__dirname, '..', 'events');
     if (!fs.existsSync(eventsPath)) return;
 
@@ -15,19 +19,19 @@ module.exports = (client) => {
 
         const isDirectory = fs.lstatSync(folderPath).isDirectory();
         const files = isDirectory
-            ? fs.readdirSync(folderPath).filter(f => f.endsWith('.js'))
-            : [folder].filter(f => f.endsWith('.js'));
+            ? fs.readdirSync(folderPath).filter((f: string) => f.endsWith('.js'))
+            : [folder].filter((f: string) => f.endsWith('.js'));
 
         for (const file of files) {
             const filePath = isDirectory ? path.join(folderPath, file) : path.join(eventsPath, file);
-            const event = require(filePath);
+            const event = await import(pathToFileURL(filePath).href);
 
             if (!event?.name || typeof event.execute !== 'function') continue;
 
             if (event.once) {
-                client.once(event.name, (...args) => event.execute(...args, client));
+                client.once(event.name, (...args: any[]) => event.execute(...args, client));
             } else {
-                client.on(event.name, (...args) => event.execute(...args, client));
+                client.on(event.name, (...args: any[]) => event.execute(...args, client));
             }
 
             eventCount++;

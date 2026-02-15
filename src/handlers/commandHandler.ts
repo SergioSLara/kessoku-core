@@ -1,9 +1,13 @@
-const fs = require('fs');
-const path = require('path');
-const { Collection } = require('discord.js');
-const { pink, blue, bold, reset } = require('../utils/colors.js');
+import fs from 'fs';
+import path from 'path';
+import { Collection } from 'discord.js';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { pink, blue, bold, reset } from '../utils/colors.js';
 
-module.exports = (client) => {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default async (client: any) => {
     client.commands = new Collection();
 
     const commandsPath = path.join(__dirname, '..', 'commands');
@@ -15,18 +19,18 @@ module.exports = (client) => {
         const folderPath = path.join(commandsPath, folder);
 
         if (fs.lstatSync(folderPath).isDirectory()) {
-            const commandFiles = fs.readdirSync(folderPath).filter(file => file.endsWith('.js'));
+            const commandFiles = fs.readdirSync(folderPath).filter((file: string) => file.endsWith('.js'));
 
             for (const file of commandFiles) {
                 const filePath = path.join(folderPath, file);
-                const command = require(filePath);
+                const command = await import(pathToFileURL(filePath).href);
 
                 if (command?.data?.name && typeof command.execute === 'function') {
                     client.commands.set(command.data.name, command);
                 }
             }
         } else if (folder.endsWith('.js')) {
-            const command = require(folderPath);
+            const command = await import(pathToFileURL(folderPath).href);
             if (command?.data?.name && typeof command.execute === 'function') {
                 client.commands.set(command.data.name, command);
             }

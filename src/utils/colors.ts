@@ -45,9 +45,7 @@ const utils = {
     clear: "\x1b[2J\x1b[H",
 };
 
-module.exports = {
-    ...styles,
-    ...basic,
-    ...palette,
-    ...utils,
-};
+export const { reset, bold, dim, italic, underline, blink, inverse, hidden, strikethrough } = styles;
+export const { black, red, green, yellow, blue, magenta, cyan, white } = basic;
+export const { pink, blueSoft, yellowSoft, purple, orange, teal, lime } = palette;
+export const { clear } = utils;
