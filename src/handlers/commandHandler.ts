@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { Collection } from 'discord.js';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { pink, blue, bold, reset } from '../utils/colors.js';
+import { pink, blue, bold, reset } from '../constants/colors.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

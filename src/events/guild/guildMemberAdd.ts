@@ -11,6 +11,7 @@ export async function execute(member: any) {
         const canal = member.guild.channels.cache.get(CANAL_ENTRADA_SERVIDOR);
         if (!canal) return;
 
+        // frases de boas-vindas no estilo Bocchi the Rock.
         const frasesBocchi = [
             'AHHH! Uma nova pessoa?! *Bocchi entra em modo glitch*',
             'Alguém chegou... rápido, me deem uma caixa de papelão!',

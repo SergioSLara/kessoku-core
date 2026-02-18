@@ -11,6 +11,7 @@ export async function execute(member: any) {
         const canal = member.guild.channels.cache.get(CANAL_SAIDA_SERVIDOR);
         if (!canal) return;
 
+        // frases de despedida no estilo Bocchi the Rock.
         const frases = [
             'alguém foi embora… Bocchi entrou em curto-circuito.',
             'uma presença a menos. a pressão social caiu 5%...',

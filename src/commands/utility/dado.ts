@@ -8,7 +8,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     try {
         const resultado = Math.floor(Math.random() * 6) + 1;
 
-        await interaction.editReply({
+        await interaction.reply({
             content: `🎲 Você rolou o dado e caiu o número **${resultado}**`
         });
 

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { pink, blue, bold, reset } from '../utils/colors.js';
+import { pink, blue, bold, reset } from '../constants/colors.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -12,7 +12,8 @@ export default async (client: any) => {
 
     let eventCount = 0;
 
-    const eventFolders = fs.readdirSync(eventsPath); // Lê as pastas dentro de /events
+    // Lê as pastas de eventos e registra os eventos no client 
+    const eventFolders = fs.readdirSync(eventsPath); 
 
     for (const folder of eventFolders) {
         const folderPath = path.join(eventsPath, folder);

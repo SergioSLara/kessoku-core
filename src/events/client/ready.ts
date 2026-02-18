@@ -1,11 +1,11 @@
 import { Events } from 'discord.js';
 import { joinVoiceChannel } from '@discordjs/voice';
-import { pink, blue, bold, reset, red } from '../../utils/colors.js';
+import { pink, blue, bold, reset, red } from '../../constants/colors.js';
 import config from '../../../config.json' with { type: 'json' };
 
 export const name = Events.ClientReady;
 export const once = true;
-
+// Evento disparado quando o cliente estiver pronto e conectado ao Discord
 export function execute(client: any) {
     console.log(`${pink}✨ [Bocchi-Log]:${reset} ${blue}${bold}${client.user.tag}${reset} está online!`);
 

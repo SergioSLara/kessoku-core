@@ -12,16 +12,6 @@ export async function execute(interaction: any) {
         return;
     }
 
-    try {
-        // DEFER IMEDIATAMENTE para evitar timeout de 3 segundos do Discord
-        if (!interaction.deferred && !interaction.replied) {
-            await interaction.deferReply();
-        }
-    } catch (error) {
-        console.error('Erro ao deferir interação:', error);
-        return;
-    }
-
     // =================
     // trata cooldowns
     // =================
@@ -43,8 +33,9 @@ export async function execute(interaction: any) {
         if (now < expirationTime) {
             const expiredTimestamp = Math.round(expirationTime / 1000);
             try {
-                await interaction.editReply({
+                await interaction.reply({
                     content: `Por favor, espere <t:${expiredTimestamp}:R> para usar o comando \`${command.data.name}\` novamente.`,
+                    ephemeral: true
                 });
             } catch (err) {
                 console.error('Erro ao responder cooldown:', err);
@@ -64,7 +55,11 @@ export async function execute(interaction: any) {
     } catch (error) {
         console.error(error);
         try {
-            await interaction.editReply({ content: 'Ocorreu um erro ao executar esse comando!', ephemeral: true });
+            if (interaction.replied || interaction.deferred) {
+                await interaction.followUp({ content: 'Ocorreu um erro ao executar esse comando!', ephemeral: true });
+            } else {
+                await interaction.reply({ content: 'Ocorreu um erro ao executar esse comando!', ephemeral: true });
+            }
         } catch (err) {
             console.error('Erro ao responder erro:', err);
         }

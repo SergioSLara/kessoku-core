@@ -1,14 +1,26 @@
+import { config as dotenvConfig } from 'dotenv';
 import { REST, Routes } from 'discord.js';
 import config from '../config.json' with { type: 'json' };
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { pink, blue, bold, reset } from './utils/colors.js';
+import { pink, blue, bold, reset } from './constants/colors.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const { DISCORD_TOKEN, API_CLIENT, SERVIDOR } = config;
+dotenvConfig({ path: path.resolve(__dirname, '../.env') });
+
+const { API_CLIENT, SERVIDOR } = config;
+
+// debug para garantir que o token está sendo carregado corretamente
+if (!process.env.DISCORD_TOKEN) {
+    console.error('❌ ERRO: DISCORD_TOKEN não encontrado no arquivo .env');
+    console.error('📁 Procurando em:', path.resolve(__dirname, '../.env'));
+    process.exit(1);
+}
+
+const DISCORD_TOKEN = process.env.DISCORD_TOKEN as string;
 
 // =========================
 // Deploy de comandos
@@ -40,7 +52,7 @@ export default async () => {
                     }
                 }
             } catch (error) {
-                console.warn(`Erro ao carregar comando de ${folder}:`, error);
+                console.warn(`⚠️ Erro ao carregar comando de ${folder}:`, error);
             }
         }
 
@@ -55,6 +67,6 @@ export default async () => {
 
         console.log(`${pink}✅ [Bocchi-Deploy]:${reset} ${blue}${bold}${commands.length}${reset} comandos sincronizados!`);
     } catch (error) {
-        console.error(`${pink}🎸 [Bocchi-Error]:${reset} A Bocchi teve um ataque de pânico no deploy:`, error);
+        console.error(`${pink}❌ [Bocchi-Error]:${reset} A Bocchi teve um ataque de pânico no deploy:`, error);
     }
 };
